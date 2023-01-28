@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  email String @unique
+  name  String
+  age   Int?
+  posts Post[]
+
+  @@map("users")
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  published Boolean   @default(true)
+  title     String
+  body      String
+  authorId  Int
+  Hashtag   Hashtag[]
+  author    User      @relation(fields: [authorId], references: [id])
+
+  @@map("posts")
+}
+
+model Hashtag {
+  id      Int    @id @default(autoincrement())
+  name    String
+  postId  Int
+  hashtag Post   @relation(fields: [postId], references: [id],onDelete: Cascade)
+
+  @@map("hashtags")
+}
